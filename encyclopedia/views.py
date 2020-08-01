@@ -1,3 +1,4 @@
+from random import choice
 from django import forms
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render
@@ -97,3 +98,12 @@ def edit(request, title):
         "form": NewEntryForm(default_data, auto_id=False),
         "action": reverse('edit', kwargs={"title": title})
     })
+
+
+def random(request):
+    entries = util.list_entries()
+    entry_title = choice(entries)
+
+    url = reverse('show', kwargs={"title": entry_title})
+
+    return HttpResponseRedirect(url)
