@@ -107,3 +107,17 @@ def random(request):
     url = reverse('show', kwargs={"title": entry_title})
 
     return HttpResponseRedirect(url)
+
+
+def search(request):
+    q = request.GET['q']
+    entry = util.get_entry(q)
+    if entry:
+        url = reverse('show', kwargs={"title": q})
+        return HttpResponseRedirect(url)
+
+    entries = util.list_entries()
+    result = list(filter(lambda title: q.lower() in title.lower(), entries))
+    return render(request, "encyclopedia/search_result.html", {
+        "result": result
+    })
