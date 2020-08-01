@@ -32,6 +32,7 @@ textarea {
   background-color: #f0f0f0;
   height: 100vh;
   padding: 20px;
+  position: relative;
 }
 
 .sidebar h2 {
@@ -47,3 +48,10 @@ textarea {
 .form-field input {
   width: fit-content;
 }
+
+/* .fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+} */

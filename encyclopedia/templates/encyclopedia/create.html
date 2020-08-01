@@ -6,16 +6,18 @@
 
 {% block body %}
     <h1>Add Article</h1>
-    <form>
+    {% if  error %}
+        <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+    <form action="{% url 'create' %}" method="post">
         {% csrf_token %}
-        <div class="form-field">
-            {{ form.title.label }}
-            {{ form.title }}
-        </div>
-        <div class="form-field">
-            {{ form.content.label }}
-            {{ form.content }}
-        </div>
-        <buttom role="submit" class="btn btn-primary">Create</buttom>
+        {% for row in form  %}
+            <div class="form-field">
+                {{ row.label }}
+                {{ row }}
+            </div>
+        {% endfor %}
+        <input type="submit" class="btn btn-primary mt-2" value="Create" />
     </form>
+    <div class="mt-5"></div>
 {% endblock %}
