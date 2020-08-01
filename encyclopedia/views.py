@@ -42,6 +42,7 @@ def create(request):
             if util.get_entry(title):
                 return render(request, "encyclopedia/create.html", {
                     "form": form,
+                    "action": reverse('create'),
                     "error": f"Article '{title}' already exist."
                 })
             util.save_entry(title, content)
@@ -51,9 +52,48 @@ def create(request):
             ))
         else:
             return render(request, "encyclopedia/create.html", {
-                "form": form
+                "form": form,
+                "action": reverse('create')
             })
     else:
         return render(request, "encyclopedia/create.html", {
             "form": NewEntryForm(),
+            "action": reverse('create')
         })
+
+
+def edit(request, title):
+    entry = util.get_entry(title)
+    if not entry:
+        raise Http404(f"We are enable to to found the article  '{title}'.")
+    default_data = {"title": title, "content": entry}
+
+    if request.method == "POST":
+        form = NewEntryForm(request.POST)
+        if form.is_valid():
+            if form.cleaned_data['title'] != title:
+                if util.get_entry(form.cleaned_data['title']):
+                    return render(request, "encyclopedia/edit.html", {
+                        "form": form,
+                        "action": reverse('edit',  kwargs={"title": title}),
+                        "error": f"Article '{form.cleaned_data['title']}' already exist."
+                    })
+
+            title = form.cleaned_data['title']
+            content = form.cleaned_data['content']
+            util.save_entry(title, content)
+            return HttpResponseRedirect(reverse(
+                'show',
+                kwargs={"title": title}
+            ))
+
+        else:
+            return render(request, "encyclopedia/edit.html", {
+                "form": form,
+                "action": reverse('edit', kwargs={"title": title})
+            })
+
+    return render(request, "encyclopedia/edit.html", {
+        "form": NewEntryForm(default_data, auto_id=False),
+        "action": reverse('edit', kwargs={"title": title})
+    })
